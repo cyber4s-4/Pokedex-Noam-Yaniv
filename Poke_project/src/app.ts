@@ -4,6 +4,7 @@
 // 4: Save his height, weight, types to variables.
 // 5: Make a new object of Pokemon that gets those variables after we save them to an interface of DataOfPokemon.
 // 6: Open an HTML page that shows a specific pokemon and render the pokemon that we saved.
+
 interface DataOfPokemon {
     id?: string;
     types?: string[]
@@ -13,7 +14,6 @@ interface DataOfPokemon {
     family?: string[];
     height: string;
     weight: string;
-    // type: string;
 }
 class PokemonComponent {
     data: DataOfPokemon;
@@ -27,9 +27,8 @@ class PokemonComponent {
         height.innerHTML = this.data.height;
         this.parent.appendChild(height)
         let weight = document.createElement('div') as HTMLDivElement;
-        weight.innerHTML = this.data.weight;
+        weight.innerHTML = this.data.types;
         this.parent.appendChild(weight)
-
     }
 }
 
@@ -39,11 +38,14 @@ async function renderData(clientSearch: string) {
     // location(`local:4400/${clientSearch}`)
     const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${clientSearch}/`)
     const data = await result.json()
+    console.log(data.types.map((type: { type: { name: any; }; }) => type.type.name));
+    
     let dataOfPokemon: DataOfPokemon = {
         height: data.height,
         weight: data.weight,
         // TODO : add more data
-        // type: data.type[0].type.name
+        // types[]: data.type
+        types: data.types.map((type: { type: { name: any; }; }) => type.type.name)
     }
     let parentElement = document.getElementById('parent') as HTMLDivElement;
     let poke = new PokemonComponent(dataOfPokemon, parentElement)
