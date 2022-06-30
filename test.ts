@@ -1,3 +1,6 @@
+import fetch from 'node-fetch-commonjs'
+// const fetch = require('node-fetch');	//npm install node-fetch
+
 // 1: Crete an input box to the client to type a pokemon name and click "search".
 // 2: Create an async function that gets a string from the input box. Example : 'bulbasaur'
 // 3: Wait for a json from fetch(`https://pokeapi.co/api/v2/pokemon/${clientSearch}/`)
@@ -8,7 +11,6 @@
 interface DataOfPokemon {
     id?: string;
     evolutionNames: string[]
-
     types?: string[]
     abillities?: string;
     name?: string;
@@ -43,6 +45,7 @@ async function getEvoNames(clientSearch: string) {
         evolvesTo = evolvesTo[0].evolves_to;
     }
     return evoNames
+    
 }
 
 let clientSearch = 'bulbasaur';
@@ -50,21 +53,19 @@ async function renderData(clientSearch: string) {
     // TODO : go to the spesific pokemon URL ...
     // location(`local:4400/${clientSearch}`)
     const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${clientSearch}/`)
-    const data = await result.json()
-    console.log(data.types.map((type: { type: { name: any; }; }) => type.type.name));
-    
+    const data: any = await result.json()
+
     let dataOfPokemon: DataOfPokemon = {
         height: data.height,
         weight: data.weight,
         types: data.types.map((type: { type: { name: any; }; }) => type.type.name),
         id: data.id,
         // TODO : Fix problem of id that changes between id of pokemon and id of evolution.
-
         evolutionNames: await getEvoNames(data.id)
     }
-    let parentElement = document.getElementById('parent') as HTMLDivElement;
-    let poke = new PokemonComponent(dataOfPokemon, parentElement)
-    poke.render()
+//     let parentElement = document.getElementById('parent') as HTMLDivElement;
+//     let poke = new PokemonComponent(dataOfPokemon, parentElement)
+//     poke.render()
 }
 
 renderData(clientSearch)
