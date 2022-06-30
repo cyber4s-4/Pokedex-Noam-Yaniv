@@ -4,6 +4,11 @@
 // 4: Save his height, weight, types to variables.
 // 5: Make a new object of Pokemon that gets those variables after we save them to an interface of DataOfPokemon.
 // 6: Open an HTML page that shows a specific pokemon and render the pokemon that we saved.
+function goButtonCick()
+{
+    let input = document.getElementById('searchInput')! as HTMLInputElement
+
+}
 interface DataOfPokemon {
     id?: string;
     types?: string[]
