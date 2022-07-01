@@ -22,9 +22,8 @@ function goButtonCick()
         renderData(input.toLocaleLowerCase())
     }
 }
-function clearHTML (){
+function clearHTML (){}
 
-<<<<<<< HEAD
 class App {
     public checkPokemon: boolean = location.search.includes('pokemon');
     pokeList: HTMLDivElement;
@@ -46,10 +45,6 @@ if (app.checkPokemon === true) {
     app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
 } else {
     app.mainSetUp()
-=======
-        // document.body..='';
-    
->>>>>>> 30a2f8b8494290d33dcc9188d6514dd064f527c5
 }
 
 
