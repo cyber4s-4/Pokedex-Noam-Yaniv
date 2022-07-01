@@ -84,7 +84,28 @@ $text-color: white;
     }
   }
 }
-
+.poke-block {
+  cursor: pointer;
+  // display: flex;
+  display: inline-block;
+}
+.poke-little-img{
+  width: 200px;
+  height: 200px;
+  border: 2px solid white;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  animation: animatedBackground 9s infinite linear;
+  @keyframes animatedBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+}
 .pokemonStatDiv{
   width: max-content;
   margin-top: 20px;
