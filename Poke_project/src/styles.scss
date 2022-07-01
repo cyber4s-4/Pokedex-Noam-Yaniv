@@ -2,6 +2,84 @@ $font-family: Helvetica, sans-serif;
 $primary-color: #333;
 $text-color: white;
 
+
+.typesContainer
+{
+  display: flex;
+  flex-direction: row;
+  .typeDiv{
+    height: 60px;
+    width: 100px;
+    margin: 10px 15px;
+    border: 2px solid black;
+    padding: auto;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .normal{
+    background-color: rgb(222, 195, 136);
+  }
+  
+  .flying{
+    background-color: rgb(216, 189, 236);
+  }
+  
+  .fire{
+    background-color: rgb(255, 140, 52);
+  }
+  
+  .fighting{
+    background-color: rgb(179, 0, 0);
+  }
+  
+  .grass{
+    background-color: green;
+  }
+  
+  .fighting{
+    background-color: rgb(179, 0, 0);
+  }
+  
+  .poison{
+    background-color: rgb(83, 5, 83);
+  }
+}
+
+.pokemonImageDiv{
+  width: 200px;
+  height: 200px;
+  border: 2px solid white;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  animation: animatedBackground 9s infinite linear;
+  @keyframes animatedBackground {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+}
+
+.pokemonStatDiv{
+  height:200px;
+  width: max-content;
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  gap:10px;
+  color:green;
+  div{
+    width: 50px;
+    background-color: rgb(218, 175, 19);
+  }
+}
+
 body {
   font-family: $font-family;
   color: $text-color;
@@ -54,3 +132,5 @@ body {
     }
   }
 }
+
+
