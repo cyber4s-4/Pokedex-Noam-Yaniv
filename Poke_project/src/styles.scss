@@ -18,15 +18,19 @@ $text-color: white;
   }
   
   .normal{
-    background-color: rgb(222, 195, 136);
+    background-color: #a7a87a;
   }
   
   .flying{
-    background-color: rgb(216, 189, 236);
+    background-color: #a990ee;
   }
   
   .fire{
-    background-color: rgb(255, 140, 52);
+    background-color: #e8843a;
+  }
+
+  .water{
+    background-color: #728fee;
   }
   
   .fighting{
@@ -34,11 +38,11 @@ $text-color: white;
   }
   
   .grass{
-    background-color: green;
+    background-color: #7ec754;
   }
   
   .fighting{
-    background-color: rgb(179, 0, 0);
+    background-color: #b8382e;
   }
   
   .poison{
@@ -107,6 +111,7 @@ $text-color: white;
   }
 }
 .pokemonStatDiv{
+  min-height: 280px;
   width: max-content;
   margin-top: 20px;
   margin-left: 20px;
