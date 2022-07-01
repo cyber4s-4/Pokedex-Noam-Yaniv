@@ -1,3 +1,23 @@
+//todo:
+/*
+* divide to main page wich shows 20 pokemons and on click shows more
+* stats should have a color corresponding to its value
+* location to specific pokemon page by id and render by url params (data.id)
+* add evolutions clicable divs that take to that pokemon page
+
+
+// 1: Crete an input box to the client to type a pokemon name and click "search".
+// 2: Create an async function that gets a string from the input box. Example : 'bulbasaur'
+// 3: Wait for a json from fetch(`https://pokeapi.co/api/v2/pokemon/${clientSearch}/`)
+// 4: Save his height, weight, types to variables.
+// 5: Make a new object of Pokemon that gets those variables after we save them to an interface of DataOfPokemon.
+// 6: Open an HTML page that shows a specific pokemon and render the pokemon that we saved.
+
+*/
+
+
+
+
 ## Pokedex Task
 
 In this task you will build your own pokédex!
