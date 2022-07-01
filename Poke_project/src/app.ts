@@ -14,6 +14,28 @@ function goButtonCick()
     }
 }
 
+class App {
+    public checkPokemon: boolean = location.search.includes('pokemon');
+    pokeList: HTMLDivElement;
+    constructor(pokeList: HTMLDivElement) {
+        this.pokeList = pokeList;
+    }
+    mainSetUp() {
+        // window.location.href = `http://localhost:4000/?pokemon=${this.data.id}`;
+        let mainDiv = document.createElement('div') as HTMLDivElement;
+        mainDiv.innerHTML = 'input box and list of pokemons '
+        document.body.appendChild(mainDiv)
+    }
+    pokeSetUp(pokemonID: string) {
+        renderData(pokemonID)
+    }
+}
+let app = new App(document.getElementById('poke-list') as HTMLDivElement)
+if (app.checkPokemon === true) {
+    app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
+} else {
+    app.mainSetUp()
+}
 
 
 interface DataOfPokemon {
@@ -104,10 +126,10 @@ async function renderData(clientSearch: string) {
     // location(`local:4400/${clientSearch}`)
     const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${clientSearch}/`)
     const data:any = await result.json()
-    console.log(data);
+    // console.log(data);
     // to get the the image url https://pokeapi.co/api/v2/pokemon-form/1/
     //"back_default":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png"
-    console.log(data.types.map((type: { type: { name: any; }; }) => type.type.name));
+    // console.log(data.types.map((type: { type: { name: any; }; }) => type.type.name));
     
     let dataOfPokemon: DataOfPokemon = {
         id: data.id,
@@ -125,6 +147,6 @@ async function renderData(clientSearch: string) {
 }
 
 
-renderData(clientSearch)
+// renderData(clientSearch)
 
 
