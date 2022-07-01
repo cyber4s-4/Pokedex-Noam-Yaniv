@@ -88,6 +88,7 @@ function renderData(clientSearch) {
                     return [4 /*yield*/, result.json()];
                 case 2:
                     data = _b.sent();
+                    console.log(data.name);
                     _a = {
                         height: data.height,
                         weight: data.weight,
@@ -100,7 +101,6 @@ function renderData(clientSearch) {
                     // TODO : Fix problem of id that changes between id of pokemon and id of evolution.
                     _a.evolutionNames = _b.sent(),
                         _a);
-                    console.log(dataOfPokemon.evolutionNames);
                     return [2 /*return*/];
             }
         });
