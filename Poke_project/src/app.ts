@@ -1,4 +1,12 @@
 window.onload= ()=>{
+    document.body.innerHTML =`<div id="parent">
+    <div><label>Enter a Pokemon name:<input id="searchInput" type="text"></label>
+      <button id="goButton">Go!</button>
+    </div>
+    <header>
+    </header>
+    <div id="mainDiv">
+    </div>`
     let goButtonElement = document.getElementById('goButton')! as HTMLButtonElement;
     
     goButtonElement.addEventListener('click',()=>{ goButtonCick()});
@@ -10,10 +18,13 @@ function goButtonCick()
     let input = inputElement.value;
     if(input)
     {
+        clearHTML();
         renderData(input.toLocaleLowerCase())
     }
 }
+function clearHTML (){
 
+<<<<<<< HEAD
 class App {
     public checkPokemon: boolean = location.search.includes('pokemon');
     pokeList: HTMLDivElement;
@@ -35,6 +46,10 @@ if (app.checkPokemon === true) {
     app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
 } else {
     app.mainSetUp()
+=======
+        // document.body..='';
+    
+>>>>>>> 30a2f8b8494290d33dcc9188d6514dd064f527c5
 }
 
 
@@ -57,6 +72,9 @@ class PokemonComponent {
     constructor(data: DataOfPokemon, parent: HTMLDivElement) {
         this.data = data
         this.parent = parent
+    }
+    clear(){
+        this.parent.innerHTML ='';
     }
     render() {
         let IdDiv = document.createElement('div') as HTMLDivElement;
@@ -100,8 +118,11 @@ class PokemonComponent {
             console.log(stat.base_stat);
             let statDiv = document.createElement('div') as HTMLDivElement;
             statDiv.className = `${stat.stat.name}`;
-            // statDiv.style.backgroundColor= `rgb( ${stat.base_stat *250},${stat.base_stat *250},${stat.base_stat *250})`
-            statDiv.innerText= stat.stat.name;
+            statDiv.style.backgroundColor= 'red';
+            console.log( "rgb(" + Math.floor(parseInt( stat.base_stat) *250/256) + ","+ Math.floor(parseInt( stat.base_stat) *250/256) +",30)");
+            statDiv.style.backgroundColor=  "rgb(" + Math.floor(parseInt( stat.base_stat) *250/256) + ","+ Math.floor(256-parseInt(stat.base_stat) *250/256) +",30)";
+            statDiv.style.height = Math.max(parseInt(stat.base_stat) ,50)+'px';
+            statDiv.innerHTML= `<span>${stat.stat.name}<br>${stat.base_stat}</span>`;
             statsContainer.appendChild(statDiv);
         })
         this.parent.appendChild(statsContainer);
@@ -141,8 +162,9 @@ async function renderData(clientSearch: string) {
         evolutionNames: await getEvoNames(data.species.url),
         stats: data.stats,        
     }
-    let parentElement = document.getElementById('parent') as HTMLDivElement;
+    let parentElement = document.getElementById('mainDiv') as HTMLDivElement;
     let poke = new PokemonComponent(dataOfPokemon, parentElement)
+    poke.clear()
     poke.render()
 }
 
