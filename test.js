@@ -52,18 +52,20 @@ var PokemonComponent = /** @class */ (function () {
     };
     return PokemonComponent;
 }());
-function getEvoNames(clientSearch) {
+function getEvoNames(speciesURL) {
     return __awaiter(this, void 0, void 0, function () {
-        var evoNames, evolution, evolvesTo;
+        var species, evolutionChain, evoNames, evolvesTo;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    evoNames = [];
-                    return [4 /*yield*/, (0, node_fetch_commonjs_1["default"])("https://pokeapi.co/api/v2/evolution-chain/".concat(clientSearch, "/")).then(function (val) { return val.json(); })];
+                case 0: return [4 /*yield*/, (0, node_fetch_commonjs_1["default"])(speciesURL).then(function (data) { return data.json(); })];
                 case 1:
-                    evolution = _a.sent();
-                    evoNames.push(evolution.chain.species.name);
-                    evolvesTo = evolution.chain.evolves_to;
+                    species = _a.sent();
+                    return [4 /*yield*/, (0, node_fetch_commonjs_1["default"])(species.evolution_chain.url).then(function (data) { return data.json(); })];
+                case 2:
+                    evolutionChain = _a.sent();
+                    evoNames = [];
+                    evoNames.push(evolutionChain.chain.species.name);
+                    evolvesTo = evolutionChain.chain.evolves_to;
                     while (evolvesTo.length) {
                         evoNames.push(evolvesTo[0].species.name);
                         evolvesTo = evolvesTo[0].evolves_to;
@@ -73,7 +75,7 @@ function getEvoNames(clientSearch) {
         });
     });
 }
-var clientSearch = 'bulbasaur';
+var clientSearch = '4';
 function renderData(clientSearch) {
     return __awaiter(this, void 0, void 0, function () {
         var result, data, dataOfPokemon;
@@ -92,12 +94,13 @@ function renderData(clientSearch) {
                         types: data.types.map(function (type) { return type.type.name; }),
                         id: data.id
                     };
-                    return [4 /*yield*/, getEvoNames(data.id)];
+                    return [4 /*yield*/, getEvoNames(data.species.url)];
                 case 3:
                     dataOfPokemon = (
                     // TODO : Fix problem of id that changes between id of pokemon and id of evolution.
                     _a.evolutionNames = _b.sent(),
                         _a);
+                    console.log(dataOfPokemon.evolutionNames);
                     return [2 /*return*/];
             }
         });

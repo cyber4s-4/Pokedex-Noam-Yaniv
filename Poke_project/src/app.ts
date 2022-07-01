@@ -33,11 +33,12 @@ class PokemonComponent {
         this.parent.appendChild(weight)
     }
 }
-async function getEvoNames(clientSearch: string) {
+async function getEvoNames(speciesURL: string) {
+    let species: any = await fetch(speciesURL).then(data => data.json());
+    let evolutionChain: any = await fetch(species.evolution_chain.url).then(data => data.json())
     let evoNames: string[] = []
-    const evolution: any = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${clientSearch}/`).then(val => val.json());
-    evoNames.push(evolution.chain.species.name)
-    let evolvesTo = evolution.chain.evolves_to;
+    evoNames.push(evolutionChain.chain.species.name)
+    let evolvesTo = evolutionChain.chain.evolves_to;
     while(evolvesTo.length) {
         evoNames.push(evolvesTo[0].species.name)
         evolvesTo = evolvesTo[0].evolves_to;
@@ -58,9 +59,7 @@ async function renderData(clientSearch: string) {
         weight: data.weight,
         types: data.types.map((type: { type: { name: any; }; }) => type.type.name),
         id: data.id,
-        // TODO : Fix problem of id that changes between id of pokemon and id of evolution.
-
-        evolutionNames: await getEvoNames(data.id)
+        evolutionNames: await getEvoNames(data.species.url)
     }
     let parentElement = document.getElementById('parent') as HTMLDivElement;
     let poke = new PokemonComponent(dataOfPokemon, parentElement)
