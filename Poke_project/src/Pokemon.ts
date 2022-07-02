@@ -1,10 +1,10 @@
-export interface PokemonInfo {
-    pokemon_species: {
-        name: string;
-        url: string;
-    };
-    entry_number: string;
-}
+// export interface PokemonInfo {
+//     pokemon_species: {
+//         name: string;
+//         url: string;
+//     };
+//     entry_number: string;
+// }
 export interface DataOfPokemon {
     id?: string;
     name?: string;
@@ -16,8 +16,13 @@ export interface DataOfPokemon {
     higherQualityImgURL?: string;
     family?: string[];
     evolutionNames: string[]
-
     stats?: Array<{ base_stat: string, effort: string, stat: { name: string, url: string } }>
+    
+    pokemon_species?: {
+        name: string;
+        url: string;
+    };
+    entry_number?: string;
 }
 
 export class PokemonComponent {
@@ -100,6 +105,36 @@ export class PokemonComponent {
         let evoDiv = document.createElement('div') as HTMLDivElement;
         // evoDiv.innerText = 'Pokemon evolutions: ' + this.data.evolutionNames;
         this.parent.appendChild(evoDiv);
+    }
+    renderMiniInfo() {
+        this.parent.classList.add('pokemonContainer')
+    
+        let pokeDiv = document.createElement('div') as HTMLDivElement;
+        pokeDiv.classList.add('pokemonBox');
+        pokeDiv.addEventListener('click', () => {
+            window.location.href = `http://localhost:4000/?pokemon=${this.data.entry_number}`;
+        })
+        //create pokemon image DOM element
+        let imgElement = document.createElement('img') as HTMLImageElement
+        imgElement.classList.add('pokemonImageDiv');
+        imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.entry_number}.png`
+    
+        pokeDiv.appendChild(imgElement)
+    
+        //create pokemon entry_number DOM element
+        let entryDiv = document.createElement('h3') as HTMLHeadingElement
+        //add zeros to the number
+        // console.log('zeros : ' + '0'.repeat(3 - pokemon.entry_number.toString().length) + ' for ' + pokemon.entry_number);
+        let numberString = '#' + '0'.repeat(3 - this.data.entry_number!.toString().length) + this.data.entry_number
+        entryDiv.innerText = numberString;
+        pokeDiv.appendChild(entryDiv)
+    
+        //create pokemon name DOM element
+        let nameDiv = document.createElement('h2') as HTMLHeadingElement
+        nameDiv.innerText = this.data.pokemon_species!.name.charAt(0).toUpperCase() +  this.data.pokemon_species!.name.slice(1)
+        pokeDiv.appendChild(nameDiv)
+    
+        this.parent.appendChild(pokeDiv)
     }
     // renderMiniInfo() {
     //     this.parent.className = 'gallery'
