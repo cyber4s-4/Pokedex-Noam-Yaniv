@@ -67,10 +67,10 @@ class App {
                 console.log('no pokemon with that information');
             }
             else if (pokemonCount > 1) {
-                while (this.filteredPokemons.length > 0) {
-                    let poke = new PokemonComponent(this.filteredPokemons[0], parentElement)
+                // TODO : fix problem of scrolling down.
+                for (let i = 0; i < this.filteredPokemons.length; i++) {
+                    let poke = new PokemonComponent(this.filteredPokemons[i], parentElement)
                     poke.renderMiniInfo()
-                    this.filteredPokemons.shift();
                 }
             } else if (pokemonCount === 1)
                 window.location.href = `http://localhost:4000/?pokemon=${searchValue}`;
@@ -88,7 +88,7 @@ class App {
 
         //detect end of page
         window.onscroll = function () {
-            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+            if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && !app.filteredPokemons.length) {
                 limitOfPokemons += 10;
                 app.loadPokemons(index, limitOfPokemons, parentElement)
             }

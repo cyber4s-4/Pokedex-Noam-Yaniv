@@ -1,10 +1,3 @@
-// export interface PokemonInfo {
-//     pokemon_species: {
-//         name: string;
-//         url: string;
-//     };
-//     entry_number: string;
-// }
 export interface DataOfPokemon {
     id?: string;
     name?: string;
@@ -82,7 +75,6 @@ export class PokemonComponent {
                 // }
                 this.parent.appendChild(pokemonImage);
 
-
         //stats
         let statsContainer = document.createElement('div') as HTMLDivElement;
         statsContainer.className = 'pokemonStatDiv';
@@ -118,13 +110,11 @@ export class PokemonComponent {
         let imgElement = document.createElement('img') as HTMLImageElement
         imgElement.classList.add('pokemonImageDiv');
         imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.entry_number}.png`
-    
         pokeDiv.appendChild(imgElement)
     
         //create pokemon entry_number DOM element
         let entryDiv = document.createElement('h3') as HTMLHeadingElement
         //add zeros to the number
-        // console.log('zeros : ' + '0'.repeat(3 - pokemon.entry_number.toString().length) + ' for ' + pokemon.entry_number);
         let numberString = '#' + '0'.repeat(3 - this.data.entry_number!.toString().length) + this.data.entry_number
         entryDiv.innerText = numberString;
         pokeDiv.appendChild(entryDiv)
@@ -136,28 +126,4 @@ export class PokemonComponent {
     
         this.parent.appendChild(pokeDiv)
     }
-    // renderMiniInfo() {
-    //     this.parent.className = 'gallery'
-    //     let pokeBlock = document.createElement('div') as HTMLDivElement;
-    //     pokeBlock.classList.add('poke-block')
-
-    //     let pokeImg = document.createElement('div') as HTMLDivElement;
-    //     pokeImg.className = 'poke-little-img';
-    //     pokeImg.style.backgroundImage = this.data.imgURL!;
-    //     pokeBlock.appendChild(pokeImg)
-
-    //     let pokeName = document.createElement('div') as HTMLDivElement;
-    //     pokeName.innerHTML = `Name: ${this.data.name!} <br>ID: ${this.data.id!}`
-    //     pokeImg.appendChild(pokeName)
-
-    //     pokeBlock.addEventListener('click', () => {
-    //        window.location.href = `http://localhost:4000/?pokemon=${this.data.id}`;
-    //     })
-    //     this.parent.appendChild(pokeBlock)
-    //     /* TODO :
-    //         change this.parent class name to gallery, gallery will have space around flex
-    //         create pokeblock that contains img, name and id.
-    //         add pokeblock listener of click that change location to ?pokemon=${poke.id}
-    //     */
-    // }
 }
