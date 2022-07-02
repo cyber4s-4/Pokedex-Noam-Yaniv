@@ -13,6 +13,12 @@
 // 5: Make a new object of Pokemon that gets those variables after we save them to an interface of DataOfPokemon.
 // 6: Open an HTML page that shows a specific pokemon and render the pokemon that we saved.
 
+* Refactor and order code. 
+* Add atribute to  pokeBox called called "poke-type:" and add the type of pokemon to the value.
+* Css the pokeBox by this attribute. If grass - green. if poison - puprle. 
+pokeBpx[poke-type="grass"] {
+  background-color: green;
+}
 */
 
 

@@ -1,3 +1,10 @@
+export interface PokemonInfo {
+    pokemon_species: {
+        name: string;
+        url: string;
+    };
+    entry_number: string;
+}
 export interface DataOfPokemon {
     id?: string;
     name?: string;
@@ -88,10 +95,10 @@ export class PokemonComponent {
         })
         this.parent.appendChild(statsContainer);
 
-        console.log('evonames ' + this.data.evolutionNames);
-        //evo
+        console.log(this.data.evolutionNames);
+        // //evo
         let evoDiv = document.createElement('div') as HTMLDivElement;
-        evoDiv.innerText = 'Pokemon evolutions: ' + this.data.evolutionNames;
+        // evoDiv.innerText = 'Pokemon evolutions: ' + this.data.evolutionNames;
         this.parent.appendChild(evoDiv);
     }
     // renderMiniInfo() {

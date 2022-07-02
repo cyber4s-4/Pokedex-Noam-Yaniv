@@ -1,4 +1,4 @@
-import { PokemonComponent, DataOfPokemon } from "./Pokemon";
+import { PokemonComponent, DataOfPokemon ,PokemonInfo} from "./Pokemon";
 
 async function getEvoNames(speciesURL: string) {
     let species: any = await fetch(speciesURL).then(data => data.json());
@@ -34,33 +34,36 @@ async function renderData(clientSearch: string, parentElement: HTMLDivElement) {
 }
 class App {
     public checkPokemon: boolean = location.search.includes('pokemon');
-
+    pokemons: Array<any>;
+    constructor() {
+        this.pokemons = [];
+    }
     async mainSetUp() {
-        function loadMorePokemon(limitOfPokemons: number, parentElement: HTMLDivElement): number {
-            console.log('loadMorePokemon');
-
-            let index = limitOfPokemons
-            limitOfPokemons += 10;
-            while (index < limitOfPokemons && localMiniData.length > 0) {
-                let element = localMiniData.shift() as { pokemon_species: { name: string, url: string }, entry_number: string };
-                renderMiniInfo(element, parentElement)
-                index++
-            }
-            // while (index < limitOfPokemons && index<localMiniData.length) {
-            //     let element = localMiniData[index] as { pokemon_species: { name: string, url: string }, entry_number: string };
-            //     renderMiniInfo(element, parentElement)
-            //     index++
-            // }
-            return limitOfPokemons;
-        }
+        this.pokemons = await getPokemons();
+        // function loadMorePokemon(limitOfPokemons: number, parentElement: HTMLDivElement): number {
+        //     // console.log('loadMorePokemon');
+        //     let index = limitOfPokemons
+        //     limitOfPokemons += 10;
+        //     while (index < limitOfPokemons && localMiniData.length > 0) {
+        //         let element = localMiniData.shift() as PokemonInfo;
+        //         renderMiniInfo(element, parentElement)
+        //         index++
+        //     }
+        //     // while (index < limitOfPokemons && index<localMiniData.length) {
+        //     //     let element = localMiniData[index] as PokemonInfo;
+        //     //     renderMiniInfo(element, parentElement)
+        //     //     index++
+        //     // }
+        //     return limitOfPokemons;
+        // }
 
 
 
         //save all pokemon entry numbers and names
-        let miniData: Array<any> = await getMiniData();
-        let localMiniData: Array<any> = miniData;
+        // let miniData: Array<any> = await getMiniData();
+        // let localMiniData: Array<any> = miniData;
 
-        console.log(miniData);
+        // console.log(miniData);
 
         //set up searchbar
         let searchBarDiv = document.createElement('div') as HTMLDivElement;
@@ -82,15 +85,15 @@ class App {
             let pokemonCount = 0;
             let searchValue = '';
             parentElement.innerHTML = '';
-            localMiniData = [];
+            // localMiniData = [];
 
-            for (const entry of miniData) {
-                if ((entry.pokemon_species.name.includes(inputElement.value) || entry.entry_number.toString().startsWith('' + inputElement.value))) {
-                    console.log((entry.pokemon_species.name.includes(inputElement.value) || entry.entry_number.toString().startsWith('' + inputElement.value)));
-                    console.log(entry);
+            for (const pokemon of this.pokemons) {
+                if ((pokemon.pokemon_species.name.includes(inputElement.value) || pokemon.pokemon_number.toString().startsWith('' + inputElement.value))) {
+                    console.log((pokemon.pokemon_species.name.includes(inputElement.value) || pokemon.pokemon_number.toString().startsWith('' + inputElement.value)));
+                    console.log(pokemon);
                     pokemonCount++;
-                    searchValue = entry.pokemon_species.name;
-                    localMiniData.push(entry);
+                    searchValue = pokemon.pokemon_species.name;
+                    // localMiniData.push(pokemon);
                 }
 
             }
@@ -103,10 +106,13 @@ class App {
                 window.location.href = `http://localhost:4000/?pokemon=${searchValue}`;
             }
             else if (pokemonCount > 1) {
-
-                while (localMiniData.length > 0) {
-                    renderMiniInfo(localMiniData.shift(), parentElement);
-                }
+                
+                // Check what does it do. Cuase log "h" doesnt happened and web works even when shut down.
+                // while (localMiniData.length > 0) {
+                //     renderMiniInfo(localMiniData.shift(), parentElement);
+                //     console.log('h');
+                    
+                // }
             }
         });
         searchBarDiv.appendChild(goButtonElement)
@@ -119,12 +125,15 @@ class App {
 
         let limitOfPokemons = 10;
         let index = 0
-        for (; index < limitOfPokemons/*miniData.length*/; index++) {
-            let element = miniData[index] as { pokemon_species: { name: string, url: string }, entry_number: string };
-            console.log(element);
-            renderMiniInfo(element, parentElement)
-            //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
-        }
+        // while(index < limitOfPokemons/*miniData.length*/) {
+        //     let pokemonInfo = miniData[index] as PokemonInfo;
+        //     console.log(pokemonInfo);
+        //     renderMiniInfo(pokemonInfo, parentElement)
+        //     index++
+        //     //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
+
+        // }
+        this.loadPokemons(index, limitOfPokemons, parentElement)
 
         //load more data button 
         // let loadMore = document.createElement('button') as HTMLButtonElement;
@@ -138,8 +147,21 @@ class App {
         window.onscroll = function () {
             if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
                 //The load time is artificial LOL
-                setTimeout(() => { limitOfPokemons = loadMorePokemon(limitOfPokemons, parentElement) }, 200);
+                // setTimeout(() => { limitOfPokemons = loadMorePokemon(limitOfPokemons, parentElement) }, 200);
+                limitOfPokemons += 10;
+                app.loadPokemons(index, limitOfPokemons, parentElement)
+                
             }
+        }
+    }
+    loadPokemons(index: number, limitOfPokemons: number, parentElement: HTMLDivElement) {
+        while(index < limitOfPokemons/*miniData.length*/) {
+            let pokemonInfo = this.pokemons[index] as PokemonInfo;
+            console.log(pokemonInfo);
+            renderMiniInfo(pokemonInfo, parentElement)
+            index++
+            //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
+
         }
     }
     pokeSetUp(pokemonID: string) {
@@ -204,15 +226,16 @@ if (app.checkPokemon === true) {
 
 
 
-async function getMiniData() {
-    console.log('getMiniData');
+async function getPokemons() {
+    // console.log('getMiniData');
     let response = await fetch('https://pokeapi.co/api/v2/pokedex/1');
-    let data = (await response.json()).pokemon_entries;
+    let data= (await response.json()).pokemon_entries;
+    // console.log(data);
+    
     return data
 }
 
-function renderMiniInfo(pokemon: { pokemon_species: { name: string, url: string }, entry_number: string },
-    parent: HTMLDivElement) {
+function renderMiniInfo(pokemon: PokemonInfo, parent: HTMLDivElement) {
     parent.classList.add('pokemonContainer')
 
     let pokeDiv = document.createElement('div') as HTMLDivElement;
@@ -230,14 +253,14 @@ function renderMiniInfo(pokemon: { pokemon_species: { name: string, url: string 
     //create pokemon entry_number DOM element
     let entryDiv = document.createElement('h3') as HTMLHeadingElement
     //add zeros to the number
-    console.log('zeros : ' + '0'.repeat(3 - pokemon.entry_number.toString().length) + ' for ' + pokemon.entry_number);
+    // console.log('zeros : ' + '0'.repeat(3 - pokemon.entry_number.toString().length) + ' for ' + pokemon.entry_number);
     let numberString = '#' + '0'.repeat(3 - pokemon.entry_number.toString().length) + pokemon.entry_number
     entryDiv.innerText = numberString;
     pokeDiv.appendChild(entryDiv)
 
     //create pokemon name DOM element
     let nameDiv = document.createElement('h2') as HTMLHeadingElement
-    nameDiv.innerText = pokemon.pokemon_species.name
+    nameDiv.innerText = pokemon.pokemon_species.name.charAt(0).toUpperCase() +  pokemon.pokemon_species.name.slice(1)
     pokeDiv.appendChild(nameDiv)
 
     parent.appendChild(pokeDiv)
