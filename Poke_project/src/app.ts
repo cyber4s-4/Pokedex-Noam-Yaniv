@@ -1,38 +1,17 @@
-import { PokemonComponent, DataOfPokemon } from "./Pokemon";
+import { PokemonComponent, DataOfPokemon } from "./PokemonComponent";
+import {Pokemons} from "./Pokemons";
 
-async function getEvoNames(speciesURL: string) {
-    let species: any = await fetch(speciesURL).then(data => data.json());
-    let evolutionChain: any = await fetch(species.evolution_chain.url).then(data => data.json())
-    let evoNames: string[] = []
-    evoNames.push(evolutionChain.chain.species.name)
-    let evolvesTo = evolutionChain.chain.evolves_to;
-    while (evolvesTo.length) {
-        evoNames.push(evolvesTo[0].species.name)
-        evolvesTo = evolvesTo[0].evolves_to;
-    }
-    return evoNames
-}
-
-async function getPokemons() {
-    // console.log('getMiniData');
-    let response = await fetch('https://pokeapi.co/api/v2/pokedex/1');
-    let data = (await response.json()).pokemon_entries;
-    // console.log(data);
-
-    return data
-}
 class App {
-    public checkPokemon: boolean = location.search.includes('pokemon');
-    pokemons: Array<any>;
-    filteredPokemons: Array<any>;
+    public checkPokemonPage: boolean = location.search.includes('pokemon');
+    public pokemons: Pokemons = new Pokemons();
+    public pokemonsData: Array<any> = [];
+    public filteredPokemons: Array<any> = [];
     mainParent: HTMLDivElement;
     constructor() {
-        this.pokemons = [];
-        this.filteredPokemons = [];
         this.mainParent = document.createElement('div') as HTMLDivElement;
     }
     async mainSetUp() {
-        this.pokemons = await getPokemons();
+        this.pokemonsData = await this.pokemons.getPokemons();
 
         //set up searchbar
         let searchBarDiv = document.createElement('div') as HTMLDivElement;
@@ -55,7 +34,7 @@ class App {
             let searchValue = '';
             parentElement.innerHTML = '';
 
-            for (const pokemon of this.pokemons) {
+            for (const pokemon of this.pokemonsData) {
                 if ((pokemon.pokemon_species.name.includes(inputElement.value) ||
                     pokemon.entry_number.toString().startsWith('' + inputElement.value))) {
                     pokemonCount++;
@@ -96,7 +75,7 @@ class App {
     }
     loadPokemons(index: number, limitOfPokemons: number, parentElement: HTMLDivElement) {
         while (index < limitOfPokemons/*miniData.length*/) {
-            let pokemon = new PokemonComponent(this.pokemons[index], parentElement)
+            let pokemon = new PokemonComponent(this.pokemonsData[index], parentElement)
             pokemon.renderMiniInfo()
             index++
             //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
@@ -113,7 +92,7 @@ class App {
             types: data.types.map((type: { type: { name: any; }; }) => type.type.name),
             imgURL: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`,
             higherQualityImgURL: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`,
-            evolutionNames: await getEvoNames(data.species.url),
+            evolutionNames: await this.pokemons.getEvoNames(data.species.url),
             stats: data.stats,
         }
         let poke = new PokemonComponent(dataOfPokemon, this.mainParent)
@@ -165,7 +144,7 @@ class App {
 }
 let app = new App()
 app.basePageSetUp();
-if (app.checkPokemon === true) {
+if (app.checkPokemonPage === true) {
     app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
 } else {
     app.mainSetUp()
