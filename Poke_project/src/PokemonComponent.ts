@@ -10,7 +10,7 @@ export interface DataOfPokemon {
     family?: string[];
     evolutionNames: string[]
     stats?: Array<{ base_stat: string, effort: string, stat: { name: string, url: string } }>
-    
+
     pokemon_species?: {
         name: string;
         url: string;
@@ -49,31 +49,16 @@ export class PokemonComponent {
             let typesDiv = document.createElement('div') as HTMLDivElement;
             let capitalizedType = type[0].toUpperCase() + type.substring(1);
             typesDiv.innerHTML = `
-            <div class="typeDiv ${type}"><span>${capitalizedType}</span></div>
-            `
+            <div class="typeDiv ${type}"><span>${capitalizedType}</span></div>`
             typesContainer.appendChild(typesDiv);
         })
         this.parent.appendChild(typesContainer);
 
-
-                //image of pokemon
-                let pokemonImage = document.createElement('img') as HTMLImageElement;
-                pokemonImage.className = 'pokemonImageDiv';
-                console.log(this.data.higherQualityImgURL);
-                
-                // if(this.data.higherQualityImgURL)
-                // {
-                    // pokemonImage.src = `${this.data.higherQualityImgURL}`;
-                    pokemonImage.src = this.data.higherQualityImgURL!;
-
-        
-                // }
-                // else 
-                // {
-                //     pokemonImageDiv.style.backgroundImage = this.data.imgURL!;
-        
-                // }
-                this.parent.appendChild(pokemonImage);
+        //image of pokemon
+        let pokemonImage = document.createElement('img') as HTMLImageElement;
+        pokemonImage.className = 'pokemonImageDiv';
+        pokemonImage.src = this.data.higherQualityImgURL!;
+        this.parent.appendChild(pokemonImage);
 
         //stats
         let statsContainer = document.createElement('div') as HTMLDivElement;
@@ -84,20 +69,13 @@ export class PokemonComponent {
             statDiv.style.backgroundColor = 'red';
             statDiv.style.backgroundColor =
                 "rgb(" + (20 + Math.floor(parseInt(stat.base_stat) * 250 / 256)) + ","
-                +  (20 + Math.floor(255- parseInt(stat.base_stat) * 250 / 256))
+                + (20 + Math.floor(255 - parseInt(stat.base_stat) * 250 / 256))
                 + ",30)";
             statDiv.style.height = Math.max(parseInt(stat.base_stat), 50) + 'px';
             statDiv.innerHTML = `<span>${stat.stat.name}<br>${stat.base_stat}</span>`;
             statsContainer.appendChild(statDiv);
         })
         this.parent.appendChild(statsContainer);
-
-        console.log(this.data.evolutionNames);
-        // //evo
-        // let evoDiv = document.createElement('div') as HTMLDivElement;
-        // evoDiv.innerText = 'Pokemon evolutions: ' + this.data.evolutionNames;
-        // this.renderEvolutions()
-        // this.parent.appendChild(evoDiv);
     }
     renderEvolutions() {
         let evoDiv = document.createElement('div') as HTMLDivElement;
@@ -106,7 +84,7 @@ export class PokemonComponent {
         imgElement.classList.add('pokemonImageDiv');
         imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`
         evoDiv.appendChild(imgElement)
-        
+
         let entryDiv = document.createElement('h3') as HTMLHeadingElement
         //add zeros to the number
         let numberString = '#' + '0'.repeat(3 - this.data.id!.toString().length) + this.data.id
@@ -114,17 +92,17 @@ export class PokemonComponent {
         evoDiv.appendChild(entryDiv)
 
         let nameDiv = document.createElement('h2') as HTMLHeadingElement
-        nameDiv.innerText = this.data.name!.charAt(0).toUpperCase() +  this.data.name!.slice(1)
+        nameDiv.innerText = this.data.name!.charAt(0).toUpperCase() + this.data.name!.slice(1)
         evoDiv.appendChild(nameDiv)
 
-        evoDiv.addEventListener('click', ()=> {
+        evoDiv.addEventListener('click', () => {
             window.location.href = `http://localhost:4000/?pokemon=${this.data.id}`;
         })
         this.parent.appendChild(evoDiv)
     }
     renderMiniInfo() {
         this.parent.classList.add('pokemonContainer')
-    
+
         let pokeDiv = document.createElement('div') as HTMLDivElement;
         pokeDiv.classList.add('pokemonBox');
         pokeDiv.addEventListener('click', () => {
@@ -135,19 +113,19 @@ export class PokemonComponent {
         imgElement.classList.add('pokemonImageDiv');
         imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.entry_number}.png`
         pokeDiv.appendChild(imgElement)
-    
+
         //create pokemon entry_number DOM element
         let entryDiv = document.createElement('h3') as HTMLHeadingElement
         //add zeros to the number
         let numberString = '#' + '0'.repeat(3 - this.data.entry_number!.toString().length) + this.data.entry_number
         entryDiv.innerText = numberString;
         pokeDiv.appendChild(entryDiv)
-    
+
         //create pokemon name DOM element
         let nameDiv = document.createElement('h2') as HTMLHeadingElement
-        nameDiv.innerText = this.data.pokemon_species!.name.charAt(0).toUpperCase() +  this.data.pokemon_species!.name.slice(1)
+        nameDiv.innerText = this.data.pokemon_species!.name.charAt(0).toUpperCase() + this.data.pokemon_species!.name.slice(1)
         pokeDiv.appendChild(nameDiv)
-    
+
         this.parent.appendChild(pokeDiv)
     }
 }

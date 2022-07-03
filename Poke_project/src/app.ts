@@ -29,30 +29,24 @@ class App {
         let goButtonElement = document.createElement('button')! as HTMLButtonElement;
         goButtonElement.innerHTML = "Go!"
         goButtonElement.addEventListener('click', () => {
-
-            let pokemonCount = 0;
-            let searchValue = '';
             parentElement.innerHTML = '';
-
             for (const pokemon of this.pokemonsData) {
                 if ((pokemon.pokemon_species.name.includes(inputElement.value) ||
                     pokemon.entry_number.toString().startsWith('' + inputElement.value))) {
-                    pokemonCount++;
-                    searchValue = pokemon.pokemon_species.name;
                     this.filteredPokemons.push(pokemon);
                 }
             }
-            if (pokemonCount == 0) {
+            if (this.filteredPokemons.length == 0) {
                 console.log('no pokemon with that information');
             }
-            else if (pokemonCount > 1) {
-                // TODO : fix problem of scrolling down.
+            else if (this.filteredPokemons.length > 1) {
                 for (let i = 0; i < this.filteredPokemons.length; i++) {
                     let poke = new PokemonComponent(this.filteredPokemons[i], parentElement)
                     poke.renderMiniInfo()
                 }
-            } else if (pokemonCount === 1)
-                window.location.href = `http://localhost:4000/?pokemon=${searchValue}`;
+            } else if (this.filteredPokemons.length === 1)
+                window.location.href = `http://localhost:4000/?pokemon=${this.filteredPokemons[0].entry_number}`;
+                
         });
         searchBarDiv.appendChild(goButtonElement)
         document.body.appendChild(searchBarDiv)
