@@ -97,6 +97,14 @@ class App {
         }
         let poke = new PokemonComponent(dataOfPokemon, this.mainParent)
         poke.renderFullInfo()
+        // poke.renderEvolutions()
+
+        // TODO: End  it.
+        dataOfPokemon.evolutionNames.forEach(async evolution => {
+            let evolutionPokemon = await this.pokemons.getPokemon(evolution);
+            let pokemonElement = new PokemonComponent(evolutionPokemon, this.mainParent)
+            pokemonElement.renderEvolutions()
+        })
     }
     //for the header, nav and footer
     basePageSetUp() {

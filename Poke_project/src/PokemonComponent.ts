@@ -94,9 +94,33 @@ export class PokemonComponent {
 
         console.log(this.data.evolutionNames);
         // //evo
-        let evoDiv = document.createElement('div') as HTMLDivElement;
+        // let evoDiv = document.createElement('div') as HTMLDivElement;
         // evoDiv.innerText = 'Pokemon evolutions: ' + this.data.evolutionNames;
-        this.parent.appendChild(evoDiv);
+        // this.renderEvolutions()
+        // this.parent.appendChild(evoDiv);
+    }
+    renderEvolutions() {
+        let evoDiv = document.createElement('div') as HTMLDivElement;
+        evoDiv.classList.add('pokemonBox')
+        let imgElement = document.createElement('img') as HTMLImageElement
+        imgElement.classList.add('pokemonImageDiv');
+        imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`
+        evoDiv.appendChild(imgElement)
+        
+        let entryDiv = document.createElement('h3') as HTMLHeadingElement
+        //add zeros to the number
+        let numberString = '#' + '0'.repeat(3 - this.data.id!.toString().length) + this.data.id
+        entryDiv.innerText = numberString;
+        evoDiv.appendChild(entryDiv)
+
+        let nameDiv = document.createElement('h2') as HTMLHeadingElement
+        nameDiv.innerText = this.data.name!.charAt(0).toUpperCase() +  this.data.name!.slice(1)
+        evoDiv.appendChild(nameDiv)
+
+        evoDiv.addEventListener('click', ()=> {
+            window.location.href = `http://localhost:4000/?pokemon=${this.data.id}`;
+        })
+        this.parent.appendChild(evoDiv)
     }
     renderMiniInfo() {
         this.parent.classList.add('pokemonContainer')
