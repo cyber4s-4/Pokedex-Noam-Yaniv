@@ -15,7 +15,6 @@ export class Pokemons {
         return evoNames
     }
     async getPokemons() {
-        // console.log('getMiniData');
         let response = await fetch('https://pokeapi.co/api/v2/pokedex/1');
         let data = (await response.json()).pokemon_entries;
         return data

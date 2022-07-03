@@ -6,6 +6,8 @@ class App {
     public pokemons: Pokemons = new Pokemons();
     public pokemonsData: Array<any> = [];
     public filteredPokemons: Array<any> = [];
+    public index: number = 0;
+    public lastPokemon: number = 10;
     mainParent: HTMLDivElement;
     constructor() {
         this.mainParent = document.createElement('div') as HTMLDivElement;
@@ -55,23 +57,21 @@ class App {
         let parentElement = document.createElement('div') as HTMLDivElement;
         document.body.appendChild(parentElement)
 
-        let index = 0
-        let limitOfPokemons = 10;
-        this.loadPokemons(index, limitOfPokemons, parentElement)
+        this.loadPokemons()
 
         //detect end of page
         window.onscroll = function () {
             if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight && !app.filteredPokemons.length) {
-                limitOfPokemons += 10;
-                app.loadPokemons(index, limitOfPokemons, parentElement)
+                app.lastPokemon += 10;
+                app.loadPokemons()
             }
         }
     }
-    loadPokemons(index: number, limitOfPokemons: number, parentElement: HTMLDivElement) {
-        while (index < limitOfPokemons/*miniData.length*/) {
-            let pokemon = new PokemonComponent(this.pokemonsData[index], parentElement)
+    loadPokemons() {
+        while (this.index < this.lastPokemon/*miniData.length*/) {
+            let pokemon = new PokemonComponent(this.pokemonsData[this.index], this.mainParent)
             pokemon.renderMiniInfo()
-            index++
+            this.index++
             //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
         }
     }
