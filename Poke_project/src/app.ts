@@ -54,8 +54,8 @@ class App {
         document.body.appendChild(searchBarDiv)
 
         //insert pokemon DOM Elements
-        let parentElement = document.createElement('div') as HTMLDivElement;
-        document.body.appendChild(parentElement)
+        // let parentElement = document.createElement('div') as HTMLDivElement;
+        document.body.appendChild(this.mainParent)
 
         this.loadPokemons()
 
