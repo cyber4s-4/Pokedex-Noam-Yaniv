@@ -31,7 +31,7 @@ class App {
         let goButtonElement = document.createElement('button')! as HTMLButtonElement;
         goButtonElement.innerHTML = "Go!"
         goButtonElement.addEventListener('click', () => {
-            parentElement.innerHTML = '';
+            this.mainParent.innerHTML = '';
             for (const pokemon of this.pokemonsData) {
                 if ((pokemon.pokemon_species.name.includes(inputElement.value) ||
                     pokemon.entry_number.toString().startsWith('' + inputElement.value))) {
@@ -43,7 +43,7 @@ class App {
             }
             else if (this.filteredPokemons.length > 1) {
                 for (let i = 0; i < this.filteredPokemons.length; i++) {
-                    let poke = new PokemonComponent(this.filteredPokemons[i], parentElement)
+                    let poke = new PokemonComponent(this.filteredPokemons[i], this.mainParent)
                     poke.renderMiniInfo()
                 }
             } else if (this.filteredPokemons.length === 1)
