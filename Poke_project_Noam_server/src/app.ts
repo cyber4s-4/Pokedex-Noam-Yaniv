@@ -1,19 +1,19 @@
+// import exp = require("constants");
 import { PokemonComponent, DataOfPokemon } from "./PokemonComponent";
-import {Pokemons} from "./Pokemons";
 
 class App {
+    connection: WebSocket;
     public checkPokemonPage: boolean = location.search.includes('pokemon');
-    public pokemons: Pokemons = new Pokemons();
-    public pokemonsData: Array<any> = [];
-    public filteredPokemons: Array<any> = [];
+    public pokemonsData: Record<DataOfPokemon["name"], DataOfPokemon> = {};
+    public filteredPokemons: Record<DataOfPokemon["name"], DataOfPokemon> = {};
     public index: number = 0;
     public lastPokemon: number = 10;
     mainParent: HTMLDivElement;
     constructor() {
+        this.connection = new WebSocket('ws://localhost:4040');
         this.mainParent = document.createElement('div') as HTMLDivElement;
     }
     async mainSetUp() {
-        this.pokemonsData = await this.pokemons.getPokemons();
 
         //set up searchbar
         let searchBarDiv = document.createElement('div') as HTMLDivElement;
@@ -32,29 +32,32 @@ class App {
         goButtonElement.innerHTML = "Go!"
         goButtonElement.addEventListener('click', () => {
             this.mainParent.innerHTML = '';
-            for (const pokemon of this.pokemonsData) {
-                if ((pokemon.pokemon_species.name.includes(inputElement.value) ||
-                    pokemon.entry_number.toString().startsWith('' + inputElement.value))) {
-                    this.filteredPokemons.push(pokemon);
+            for (const [_, dataOfPokemon] of Object.entries(this.pokemonsData)) {
+                if ((dataOfPokemon.name!.includes(inputElement.value) ||
+                    dataOfPokemon.id!.toString().startsWith('' + inputElement.value))) {
+                    this.filteredPokemons = { ...this.filteredPokemons, [dataOfPokemon.name]: dataOfPokemon }
                 }
             }
-            if (this.filteredPokemons.length == 0) {
+            let fileteredPokemonsNames = Object.keys(this.filteredPokemons)
+            console.log(fileteredPokemonsNames.length);
+
+            if (fileteredPokemonsNames.length === 0) {
                 console.log('no pokemon with that information');
             }
-            else if (this.filteredPokemons.length > 1) {
-                for (let i = 0; i < this.filteredPokemons.length; i++) {
-                    let poke = new PokemonComponent(this.filteredPokemons[i], this.mainParent)
+            else if (fileteredPokemonsNames.length > 1) {
+                for (let i = 0; i < fileteredPokemonsNames.length; i++) {
+                    let poke = new PokemonComponent(this.filteredPokemons[fileteredPokemonsNames[i]], this.mainParent)
                     poke.renderMiniInfo()
                 }
-            } else if (this.filteredPokemons.length === 1)
-                window.location.href = `http://localhost:4000/?pokemon=${this.filteredPokemons[0].entry_number}`;
-                
+            } else if (fileteredPokemonsNames.length === 1) {
+                window.location.href = `http://localhost:4000/?pokemon=${this.filteredPokemons[fileteredPokemonsNames[0]].name}`;
+            }
+
         });
         searchBarDiv.appendChild(goButtonElement)
         document.body.appendChild(searchBarDiv)
 
         //insert pokemon DOM Elements
-        // let parentElement = document.createElement('div') as HTMLDivElement;
         document.body.appendChild(this.mainParent)
 
         this.loadPokemons()
@@ -68,37 +71,23 @@ class App {
         }
     }
     loadPokemons() {
-        while (this.index < this.lastPokemon/*miniData.length*/) {
-            let pokemon = new PokemonComponent(this.pokemonsData[this.index], this.mainParent)
+        let pokemonNames = Object.keys(this.pokemonsData)
+        while (this.index < this.lastPokemon) {
+            let pokemon = new PokemonComponent(this.pokemonsData[pokemonNames[this.index]], this.mainParent)
             pokemon.renderMiniInfo()
             this.index++
-            //image url `url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png')`
         }
     }
-    async pokeSetUp(pokemonID: string) {
-        const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonID}/`)
-        const data: any = await result.json()
-        let dataOfPokemon: DataOfPokemon = {
-            id: data.id,
-            name: data.name,
-            height: data.height,
-            weight: data.weight,
-            types: data.types.map((type: { type: { name: any; }; }) => type.type.name),
-            imgURL: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`,
-            higherQualityImgURL: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${data.id}.png`,
-            evolutionNames: await this.pokemons.getEvoNames(data.species.url),
-            stats: data.stats,
-        }
-        let poke = new PokemonComponent(dataOfPokemon, this.mainParent)
+    pokeSetUp(pokemonName: string) {
+        let poke = new PokemonComponent(this.pokemonsData[pokemonName], this.mainParent)
         poke.renderFullInfo()
-        // poke.renderEvolutions()
 
-        // TODO: End  it.
-        dataOfPokemon.evolutionNames.forEach(async evolution => {
-            let evolutionPokemon = await this.pokemons.getPokemon(evolution);
-            let pokemonElement = new PokemonComponent(evolutionPokemon, this.mainParent)
-            pokemonElement.renderEvolutions()
-        })
+        for (let evoPoke of this.pokemonsData[pokemonName].evolutionNames) {
+            if (evoPoke) {
+                let poke = new PokemonComponent(this.pokemonsData[evoPoke], this.mainParent)
+                poke.renderEvolutions()
+            }
+        }
     }
     //for the header, nav and footer
     basePageSetUp() {
@@ -145,9 +134,15 @@ class App {
     }
 }
 let app = new App()
-app.basePageSetUp();
-if (app.checkPokemonPage === true) {
-    app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
-} else {
-    app.mainSetUp()
-}
+app.connection.addEventListener('open', () => {
+    app.connection.send('get-pokemons')
+    app.basePageSetUp();
+})
+app.connection.addEventListener('message', (serverMessage) => {
+    app.pokemonsData = JSON.parse(serverMessage.data);
+    if (app.checkPokemonPage === true) {
+        app.pokeSetUp((new URLSearchParams(location.search)).get('pokemon')!)
+    } else {
+        app.mainSetUp()
+    }
+})

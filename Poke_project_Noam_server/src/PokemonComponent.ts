@@ -1,21 +1,13 @@
-export interface DataOfPokemon {
-    id?: string;
-    name?: string;
+    export interface DataOfPokemon {
+    id: string;
+    name: string;
     height: string;
     weight: string;
-    types?: string[]
-    abillities?: string;
-    imgURL?: string;
-    higherQualityImgURL?: string;
-    family?: string[];
+    types: any[]
+    imgURL: string;
+    higherQualityImgURL: string;
     evolutionNames: string[]
-    stats?: Array<{ base_stat: string, effort: string, stat: { name: string, url: string } }>
-
-    pokemon_species?: {
-        name: string;
-        url: string;
-    };
-    entry_number?: string;
+    stats: Array<{ base_stat: string, effort: string, stat: { name: string, url: string } }>
 }
 
 export class PokemonComponent {
@@ -42,14 +34,15 @@ export class PokemonComponent {
         weightDiv.innerText = 'Pokemon Weight. :' + this.data.weight;
         this.parent.appendChild(weightDiv);
 
-        //types
+        // types
         let typesContainer = document.createElement('div') as HTMLDivElement;
         typesContainer.className = 'typesContainer';
+        
         this.data.types?.forEach((type) => {
             let typesDiv = document.createElement('div') as HTMLDivElement;
-            let capitalizedType = type[0].toUpperCase() + type.substring(1);
+            let capitalizedType = type.type.name.toUpperCase()// + type.type.name.substring(1);
             typesDiv.innerHTML = `
-            <div class="typeDiv ${type}"><span>${capitalizedType}</span></div>`
+            <div class="typeDiv ${type.type.name}"><span>${capitalizedType}</span></div>`
             typesContainer.appendChild(typesDiv);
         })
         this.parent.appendChild(typesContainer);
@@ -96,7 +89,7 @@ export class PokemonComponent {
         evoDiv.appendChild(nameDiv)
 
         evoDiv.addEventListener('click', () => {
-            window.location.href = `http://localhost:4000/?pokemon=${this.data.id}`;
+            window.location.href = `http://localhost:4000/?pokemon=${this.data.name}`;
         })
         this.parent.appendChild(evoDiv)
     }
@@ -106,24 +99,24 @@ export class PokemonComponent {
         let pokeDiv = document.createElement('div') as HTMLDivElement;
         pokeDiv.classList.add('pokemonBox');
         pokeDiv.addEventListener('click', () => {
-            window.location.href = `http://localhost:4000/?pokemon=${this.data.entry_number}`;
+            window.location.href = `http://localhost:4000/?pokemon=${this.data.name}`;
         })
         //create pokemon image DOM element
         let imgElement = document.createElement('img') as HTMLImageElement
         imgElement.classList.add('pokemonImageDiv');
-        imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.entry_number}.png`
+        imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`
         pokeDiv.appendChild(imgElement)
 
         //create pokemon entry_number DOM element
         let entryDiv = document.createElement('h3') as HTMLHeadingElement
         //add zeros to the number
-        let numberString = '#' + '0'.repeat(3 - this.data.entry_number!.toString().length) + this.data.entry_number
+        let numberString = '#' + '0'.repeat(3 - this.data.id!.toString().length) + this.data.id
         entryDiv.innerText = numberString;
         pokeDiv.appendChild(entryDiv)
 
         //create pokemon name DOM element
         let nameDiv = document.createElement('h2') as HTMLHeadingElement
-        nameDiv.innerText = this.data.pokemon_species!.name.charAt(0).toUpperCase() + this.data.pokemon_species!.name.slice(1)
+        nameDiv.innerText = this.data.name!.charAt(0).toUpperCase() + this.data.name!.slice(1)
         pokeDiv.appendChild(nameDiv)
 
         this.parent.appendChild(pokeDiv)
