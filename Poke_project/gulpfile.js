@@ -27,9 +27,16 @@ gulp.task('scss', () => {
     .pipe(gulp.dest('./dist'));
 });
 
+// Start express
+gulp.task('express', () => {
+  const tsc = exec('node server.js');
+  tsc.stdout.on('data', data => console.log(data));
+  tsc.stderr.on('data', data => console.error(data));
+});
+
 // Transfers index
 gulp.task('index', () => {
-  return gulp.src(['./src/index.html', './src/favicon.ico'])
+  return gulp.src(['./src/index.html', './src/favicon.ico', './database.json'])
     .pipe(gulp.dest('./dist'));
 });
 
@@ -90,5 +97,6 @@ gulp.task('default', gulp.series(
     'watch-html',
     'watch-tsc',
     'tsc-w',
+    'express',
   ),
 ));

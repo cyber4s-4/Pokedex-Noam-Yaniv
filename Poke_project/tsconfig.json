@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "es2020",
@@ -12,6 +13,6 @@
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
     "tsBuildInfoFile": "./dist/cache/tsc.json",
-    "strict": true
+    "skipLibCheck": true
   }
 }

@@ -12,6 +12,7 @@ $home-color: #919191;
 $pokedex-color: #e3350d;
 $video_games-color: #ee6b2f;
 $dark-gray: #313131;
+
 body {
   font-family: $font-family;
   color: $text-color;
@@ -20,6 +21,21 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+}
+
+.favButton {
+  width: 20px;
+  height: 20px;
+  border: 2px solid black;
+}
+
+.favButton-off {
+  background-color: #555;
+}
+
+.favButton-on {
+  background-color: rgb(220, 233, 42);
 
 }
 
@@ -127,29 +143,32 @@ nav {
 
 }
 
-.searchBarDiv{
+.searchBarDiv {
   height: max-content;
   width: 100%;
   padding: 10px 0;
-  
+
   display: flex;
   flex-direction: row;
   // justify-items: center;
   justify-content: center;
-  gap:15px;
+  gap: 15px;
   background-color: white;
-  color:#313131;
-  .searchBarText{
+  color: #313131;
+
+  .searchBarText {
     display: flex;
     flex-direction: column;
     align-items: center;
-    input{
-      width:80%;
-      height:30px;
+
+    input {
+      width: 80%;
+      height: 30px;
       font-size: 20px;
     }
   }
 }
+
 .typesContainer {
   display: flex;
   flex-direction: row;
@@ -164,11 +183,13 @@ nav {
     text-align: center;
     justify-content: center;
     align-items: center;
-    >span{
+
+    >span {
       align-self: center;
       font-size: 20px;
     }
   }
+
   .normal {
     background-color: #a8a878;
   }
@@ -322,12 +343,36 @@ nav {
       transform: translate(0, -10px);
     }
 
+    .entryDiv {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+
+      .favButton {
+        width: 20px;
+        height: 20px;
+        border: 2px solid black;
+      }
+
+      .favButton-off {
+        background-color: #555;
+      }
+
+      .favButton-on {
+        background-color: rgb(220, 233, 42);
+
+      }
+    }
+
     h3 {
       color: $entry-number-color;
     }
 
     h2 {
       color: $pokemon-name-color;
+      margin-top: 10px;
     }
 
     .pokemonImageDiv {
@@ -351,5 +396,18 @@ nav {
         }
       }
     }
+
+    .typesContainer {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      .typeDiv {
+        margin: 5px 0;
+        padding: 0% 5px;
+        width: 60px;
+        height: 40px;
+      }
+    }
+
   }
 }
