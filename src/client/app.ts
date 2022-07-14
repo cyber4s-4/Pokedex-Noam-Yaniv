@@ -2,7 +2,7 @@
 import { PokemonComponent, DataOfPokemon } from "./PokemonComponent";
 
 class App {
-  connection: WebSocket;
+  // connection: WebSocket;
   public checkPokemonPage: boolean = location.search.includes("pokemon");
   public pokemonsData: Record<DataOfPokemon["name"], DataOfPokemon> = {};
   public filteredPokemons: Record<DataOfPokemon["name"], DataOfPokemon> = {};
@@ -10,7 +10,7 @@ class App {
   public lastPokemon: number = 10;
   mainParent: HTMLDivElement;
   constructor() {
-    this.connection = new WebSocket(location.origin.replace(/^https/, "ws"));
+    // this.connection = new WebSocket(location.origin.replace(/^https/, "ws"));
     this.mainParent = document.createElement("div") as HTMLDivElement;
   }
   async mainSetUp() {
@@ -157,15 +157,22 @@ class App {
   }
 }
 let app = new App();
-app.connection.addEventListener("open", () => {
-  app.connection.send("get-pokemons");
-  app.basePageSetUp();
-});
-app.connection.addEventListener("message", (serverMessage) => {
-  app.pokemonsData = JSON.parse(serverMessage.data);
-  if (app.checkPokemonPage === true) {
-    app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
-  } else {
-    app.mainSetUp();
-  }
-});
+async function test() {
+  let response = await fetch(location.origin + "/pokemons");
+  let pokemonsData = await response.json();
+  console.log(pokemonsData);
+}
+test();
+// app.connection.addEventListener("open", async () => {
+// app.connection.send("get-pokemons");
+// app.basePageSetUp();
+
+// });
+// app.connection.addEventListener("message", (serverMessage) => {
+//   app.pokemonsData = JSON.parse(serverMessage.data);
+//   if (app.checkPokemonPage === true) {
+//     app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
+//   } else {
+//     app.mainSetUp();
+//   }
+// });
