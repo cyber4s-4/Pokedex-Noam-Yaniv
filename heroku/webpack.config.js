@@ -1,10 +1,10 @@
 module.exports = {
-  mode: 'development',
+  mode: "development",
   entry: "./dist/tsc/client/app.js",
   devtool: "source-map",
   output: {
     filename: "app.js",
-    library: "app"
+    library: "app",
   },
   module: {
     rules: [
@@ -14,5 +14,5 @@ module.exports = {
         use: ["source-map-loader"],
       },
     ],
-  }
-}
+  },
+};

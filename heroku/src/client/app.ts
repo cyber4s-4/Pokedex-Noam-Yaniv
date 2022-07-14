@@ -10,7 +10,7 @@ class App {
   public lastPokemon: number = 10;
   mainParent: HTMLDivElement;
   constructor() {
-    this.connection = new WebSocket("ws://localhost:4040");
+    this.connection = new WebSocket(location.origin.replace(/^https/, "ws"));
     this.mainParent = document.createElement("div") as HTMLDivElement;
   }
   async mainSetUp() {
