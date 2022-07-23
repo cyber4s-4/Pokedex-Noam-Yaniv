@@ -1,16 +1,18 @@
-// import exp = require("constants");
 import { PokemonComponent, DataOfPokemon } from "./PokemonComponent";
-
+interface pokemon {
+  _id: string;
+  data: DataOfPokemon;
+}
 class App {
-  // connection: WebSocket;
+  public checkMergePage: boolean = location.href.includes("merge");
   public checkPokemonPage: boolean = location.search.includes("pokemon");
-  public pokemonsData: Record<DataOfPokemon["name"], DataOfPokemon> = {};
-  public filteredPokemons: Record<DataOfPokemon["name"], DataOfPokemon> = {};
+  public pokemons: pokemon[] = [];
+  public filteredPokemons: pokemon[] = [];
   public index: number = 0;
   public lastPokemon: number = 10;
+  public loadAvaiable = true;
   mainParent: HTMLDivElement;
   constructor() {
-    // this.connection = new WebSocket(location.origin.replace(/^https/, "ws"));
     this.mainParent = document.createElement("div") as HTMLDivElement;
   }
   async mainSetUp() {
@@ -31,38 +33,32 @@ class App {
       "button"
     )! as HTMLButtonElement;
     goButtonElement.innerHTML = "Go!";
-    goButtonElement.addEventListener("click", () => {
-      this.mainParent.innerHTML = "";
-      for (const [_, dataOfPokemon] of Object.entries(this.pokemonsData)) {
-        if (
-          dataOfPokemon.name!.includes(inputElement.value) ||
-          dataOfPokemon.id!.toString().startsWith("" + inputElement.value)
-        ) {
-          this.filteredPokemons = {
-            ...this.filteredPokemons,
-            [dataOfPokemon.name]: dataOfPokemon,
-          };
-        }
-      }
-      let fileteredPokemonsNames = Object.keys(this.filteredPokemons);
-      console.log(fileteredPokemonsNames.length);
-
-      if (fileteredPokemonsNames.length === 0) {
-        console.log("no pokemon with that information");
-      } else if (fileteredPokemonsNames.length > 1) {
-        for (let i = 0; i < fileteredPokemonsNames.length; i++) {
-          let poke = new PokemonComponent(
-            this.filteredPokemons[fileteredPokemonsNames[i]],
-            this.mainParent
-          );
-          poke.renderMiniInfo();
-        }
-      } else if (fileteredPokemonsNames.length === 1) {
-        window.location.href =
-          location.origin +
-          `${this.filteredPokemons[fileteredPokemonsNames[0]].name}`;
-      }
-    });
+    // TODO: fix it to send fetch.
+    // goButtonElement.addEventListener("click", () => {
+    //   this.mainParent.innerHTML = "";
+    //   this.pokemons.forEach((pokemon) => {
+    //     if (
+    //       pokemon.data.name!.includes(inputElement.value) ||
+    //       pokemon.data.id!.toString().startsWith("" + inputElement.value)
+    //     ) {
+    //       this.filteredPokemons.push(pokemon);
+    //     }
+    //   });
+    //   if (this.filteredPokemons.length === 0) {
+    //     console.log("no pokemon with that information");
+    //   } else if (this.filteredPokemons.length > 1) {
+    //     for (let i = 0; i < this.filteredPokemons.length; i++) {
+    //       let poke = new PokemonComponent(
+    //         this.filteredPokemons[i].data,
+    //         this.mainParent
+    //       );
+    //       poke.renderMiniInfo();
+    //     }
+    //   } else if (this.filteredPokemons.length === 1) {
+    //     window.location.href =
+    //       location.origin + `${this.filteredPokemons[0].data.name}`;
+    //   }
+    // });
     searchBarDiv.appendChild(goButtonElement);
     document.body.appendChild(searchBarDiv);
 
@@ -71,44 +67,66 @@ class App {
 
     this.loadPokemons();
 
+    let loadPokemonsButton = document.createElement(
+      "button"
+    ) as HTMLButtonElement;
+    loadPokemonsButton.innerHTML = "Load More Pokemons";
+    loadPokemonsButton.addEventListener("click", () => {
+      this.loadPokemons();
+    });
+    document.body.appendChild(loadPokemonsButton);
+
     //detect end of page
-    window.onscroll = function () {
-      if (
-        window.innerHeight + window.pageYOffset >= document.body.offsetHeight &&
-        !app.filteredPokemons.length
-      ) {
-        app.lastPokemon += 10;
-        app.loadPokemons();
-      }
-    };
+    // window.onscroll = async function () {
+    //   if (
+    //     window.innerHeight + window.pageYOffset >=
+    //       // check this 50.
+    //       document.body.offsetHeight - 50 &&
+    //     !app.filteredPokemons.length
+    //   ) {
+    //     app.lastPokemon += 10;
+    //     if (app.loadAvaiable === true) {
+    //       app.loadAvaiable = false;
+    //       // await app.loadPokemons();
+    //     }
+    //   }
+    // };
   }
-  loadPokemons() {
-    let pokemonNames = Object.keys(this.pokemonsData);
-    while (this.index < this.lastPokemon) {
-      let pokemon = new PokemonComponent(
-        this.pokemonsData[pokemonNames[this.index]],
-        this.mainParent
+  async loadPokemons() {
+    let response;
+    if (this.checkMergePage === true) {
+      response = await fetch(
+        `${location.origin}/load-merged?start=${this.index}&end=${this.lastPokemon}`
       );
-      pokemon.renderMiniInfo();
-      this.index++;
+    } else {
+      response = await fetch(
+        `${location.origin}/load-pokemons?start=${this.index}&end=${this.lastPokemon}`
+      );
     }
+    let newPokemons = await response.json();
+    newPokemons.forEach((pokemon: pokemon) => {
+      let poke = new PokemonComponent(pokemon.data, this.mainParent);
+      poke.renderMiniInfo();
+    });
+    // this.pokemons.concat(...(await newPokemons));
+    this.index += 10;
   }
-  pokeSetUp(pokemonName: string) {
-    let poke = new PokemonComponent(
-      this.pokemonsData[pokemonName],
-      this.mainParent
+  async pokeSetUp(pokemonName: string) {
+    let response = await fetch(
+      location.origin + `/pokemon?pokemon=${pokemonName}`
     );
+    let pokemon: pokemon = await response.json();
+    let poke = new PokemonComponent(pokemon.data, this.mainParent);
     poke.renderFullInfo();
 
-    for (let evoPoke of this.pokemonsData[pokemonName].evolutionNames) {
-      if (evoPoke) {
-        let poke = new PokemonComponent(
-          this.pokemonsData[evoPoke],
-          this.mainParent
-        );
-        poke.renderEvolutions();
-      }
-    }
+    pokemon.data.evolutionNames.forEach(async (evoPoke) => {
+      let response = await fetch(
+        location.origin + `/pokemon?pokemon=${evoPoke}`
+      );
+      let pokemon: pokemon = await response.json();
+      let poke = new PokemonComponent(pokemon.data, this.mainParent);
+      poke.renderEvolutions();
+    });
   }
   //for the header, nav and footer
   basePageSetUp() {
@@ -139,13 +157,13 @@ class App {
     });
     nav.appendChild(home);
     //pokedex button
-    let pokedex = document.createElement("div") as HTMLDivElement;
-    pokedex.classList.add("pokedex");
-    pokedex.innerText = "pokedex";
-    pokedex.addEventListener("click", () => {
-      window.location.href = `/`;
+    let mergePokedex = document.createElement("div") as HTMLDivElement;
+    mergePokedex.classList.add("pokedex");
+    mergePokedex.innerText = "Merge pokedex";
+    mergePokedex.addEventListener("click", () => {
+      window.location.href = `/merge`;
     });
-    nav.appendChild(pokedex);
+    nav.appendChild(mergePokedex);
     //VIdeo Games & Apps button
     let video_games = document.createElement("div") as HTMLDivElement;
     video_games.classList.add("video_games");
@@ -158,31 +176,23 @@ class App {
 }
 let app = new App();
 app.basePageSetUp();
-async function test() {
-  console.log("try to fetch to /pokemons");
-  console.log(location.origin);
-
-  let response = await fetch(location.origin + "/pokemons");
-  let pokemonsData = await response.json();
-  app.pokemonsData = await pokemonsData;
-  if (app.checkPokemonPage === true) {
-    app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
-  } else {
+async function main() {
+  if (app.checkMergePage === true) {
+    let response = await fetch(`${location.origin}/load-merged`);
+    app.pokemons = await response.json();
     app.mainSetUp();
+  } else {
+    let response = await fetch(
+      `${location.origin}/load-pokemons?start=${app.index}&end=${app.lastPokemon}`
+    );
+    app.pokemons = await response.json();
+
+    if (app.checkPokemonPage === true) {
+      app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
+    } else {
+      app.mainSetUp();
+    }
   }
 }
 
-test();
-// app.connection.addEventListener("open", async () => {
-// app.connection.send("get-pokemons");
-// app.basePageSetUp();
-
-// });
-// app.connection.addEventListener("message", (serverMessage) => {
-//   app.pokemonsData = JSON.parse(serverMessage.data);
-//   if (app.checkPokemonPage === true) {
-//     app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
-//   } else {
-//     app.mainSetUp();
-//   }
-// });
+main();

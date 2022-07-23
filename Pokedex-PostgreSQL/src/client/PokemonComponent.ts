@@ -80,13 +80,19 @@ export class PokemonComponent {
     evoDiv.classList.add("pokemonBox");
     let imgElement = document.createElement("img") as HTMLImageElement;
     imgElement.classList.add("pokemonImageDiv");
-    imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`;
+    // imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`;
+    imgElement.src = this.data.imgURL;
     evoDiv.appendChild(imgElement);
 
     let entryDiv = document.createElement("h3") as HTMLHeadingElement;
     //add zeros to the number
-    let numberString =
-      "#" + "0".repeat(3 - this.data.id!.toString().length) + this.data.id;
+    let numberString;
+    if (this.data.id.toString().includes(".")) {
+      numberString = "#" + this.data.id;
+    } else {
+      numberString =
+        "#" + "0".repeat(3 - this.data.id!.toString().length) + this.data.id;
+    }
     entryDiv.innerText = numberString;
     evoDiv.appendChild(entryDiv);
 
@@ -111,14 +117,21 @@ export class PokemonComponent {
     //create pokemon image DOM element
     let imgElement = document.createElement("img") as HTMLImageElement;
     imgElement.classList.add("pokemonImageDiv");
-    imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`;
+    // imgElement.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${this.data.id}.png`;
+    imgElement.src = this.data.imgURL;
     pokeDiv.appendChild(imgElement);
 
     //create pokemon entry_number DOM element
     let entryDiv = document.createElement("h3") as HTMLHeadingElement;
     //add zeros to the number
-    let numberString =
-      "#" + "0".repeat(3 - this.data.id!.toString().length) + this.data.id;
+    let numberString;
+
+    if (this.data.id.toString().includes(".")) {
+      numberString = "#" + this.data.id;
+    } else {
+      numberString =
+        "#" + "0".repeat(3 - this.data.id!.toString().length) + this.data.id;
+    }
     entryDiv.innerText = numberString;
     pokeDiv.appendChild(entryDiv);
 
