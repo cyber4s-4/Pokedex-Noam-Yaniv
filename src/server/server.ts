@@ -18,8 +18,9 @@ app.use(express.static(root));
 app.get("/", (_req, res) => {
   res.status(200).sendFile(path.join(root, "index.html"));
 });
+
 app.get("/pokemons", (_req, res) => {
-  let allPokemons = JSON.parse(fs.readFileSync("../pokemonsObj.json"));
+  let allPokemons = JSON.parse(fs.readFileSync("./pokemonsObj.json"));
   res.send(JSON.stringify(allPokemons));
 });
 

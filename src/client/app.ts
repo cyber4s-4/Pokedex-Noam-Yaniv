@@ -58,9 +58,9 @@ class App {
           poke.renderMiniInfo();
         }
       } else if (fileteredPokemonsNames.length === 1) {
-        window.location.href = `http://localhost:4000/?pokemon=${
-          this.filteredPokemons[fileteredPokemonsNames[0]].name
-        }`;
+        window.location.href =
+          location.origin +
+          `${this.filteredPokemons[fileteredPokemonsNames[0]].name}`;
       }
     });
     searchBarDiv.appendChild(goButtonElement);
@@ -135,7 +135,7 @@ class App {
     home.classList.add("home");
     home.innerText = "Home";
     home.addEventListener("click", () => {
-      window.location.href = `http://localhost:4000/`;
+      window.location.href = `/`;
     });
     nav.appendChild(home);
     //pokedex button
@@ -143,7 +143,7 @@ class App {
     pokedex.classList.add("pokedex");
     pokedex.innerText = "pokedex";
     pokedex.addEventListener("click", () => {
-      window.location.href = `http://localhost:4000/`;
+      window.location.href = `/`;
     });
     nav.appendChild(pokedex);
     //VIdeo Games & Apps button
@@ -157,11 +157,21 @@ class App {
   }
 }
 let app = new App();
+app.basePageSetUp();
 async function test() {
+  console.log("try to fetch to /pokemons");
+  console.log(location.origin);
+
   let response = await fetch(location.origin + "/pokemons");
   let pokemonsData = await response.json();
-  console.log(pokemonsData);
+  app.pokemonsData = await pokemonsData;
+  if (app.checkPokemonPage === true) {
+    app.pokeSetUp(new URLSearchParams(location.search).get("pokemon")!);
+  } else {
+    app.mainSetUp();
+  }
 }
+
 test();
 // app.connection.addEventListener("open", async () => {
 // app.connection.send("get-pokemons");

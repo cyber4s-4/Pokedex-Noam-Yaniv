@@ -96,7 +96,7 @@ export class PokemonComponent {
     evoDiv.appendChild(nameDiv);
 
     evoDiv.addEventListener("click", () => {
-      window.location.href = `http://localhost:4000/?pokemon=${this.data.name}`;
+      window.location.href = location.origin + `?pokemon=${this.data.name}`;
     });
     this.parent.appendChild(evoDiv);
   }
@@ -106,7 +106,7 @@ export class PokemonComponent {
     let pokeDiv = document.createElement("div") as HTMLDivElement;
     pokeDiv.classList.add("pokemonBox");
     pokeDiv.addEventListener("click", () => {
-      window.location.href = `http://localhost:4000/?pokemon=${this.data.name}`;
+      window.location.href = location.origin + `?pokemon=${this.data.name}`;
     });
     //create pokemon image DOM element
     let imgElement = document.createElement("img") as HTMLImageElement;

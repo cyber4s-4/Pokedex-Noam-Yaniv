@@ -100,6 +100,7 @@ gulp.task("heroku-copy-root", () => {
       "./package-lock.json",
       "./Procfile",
       "./dist/tsc/server/server.js",
+      "./src/server/pokemonsObj.json",
     ])
     .pipe(gulp.dest("./deploy"));
 });
