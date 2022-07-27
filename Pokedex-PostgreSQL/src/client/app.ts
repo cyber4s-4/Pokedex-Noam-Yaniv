@@ -9,7 +9,9 @@ class App {
   public pokemons: pokemon[] = [];
   public filteredPokemons: pokemon[] = [];
   public index: number = 0;
-  public lastPokemon: number = 10;
+  // public lastPokemon: number = 10;
+  public pokemonToLoadCount: number = 10;
+
   public loadAvaiable = true;
   mainParent: HTMLDivElement;
   constructor() {
@@ -66,7 +68,6 @@ class App {
     document.body.appendChild(this.mainParent);
 
     this.loadPokemons();
-
     let loadPokemonsButton = document.createElement(
       "button"
     ) as HTMLButtonElement;
@@ -76,31 +77,21 @@ class App {
     });
     document.body.appendChild(loadPokemonsButton);
 
-    //detect end of page
-    // window.onscroll = async function () {
-    //   if (
-    //     window.innerHeight + window.pageYOffset >=
-    //       // check this 50.
-    //       document.body.offsetHeight - 50 &&
-    //     !app.filteredPokemons.length
-    //   ) {
-    //     app.lastPokemon += 10;
-    //     if (app.loadAvaiable === true) {
-    //       app.loadAvaiable = false;
-    //       // await app.loadPokemons();
-    //     }
-    //   }
-    // };
+    window.onscroll = async function () {
+      if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+        await app.loadPokemons();
+      }
+    };
   }
   async loadPokemons() {
     let response;
     if (this.checkMergePage === true) {
       response = await fetch(
-        `${location.origin}/load-merged?start=${this.index}&end=${this.lastPokemon}`
+        `${location.origin}/load-merged?start=${this.index}&end=${this.index + this.pokemonToLoadCount}`
       );
     } else {
       response = await fetch(
-        `${location.origin}/load-pokemons?start=${this.index}&end=${this.lastPokemon}`
+        `${location.origin}/load-pokemons?start=${this.index}&end=${this.index + this.pokemonToLoadCount}`
       );
     }
     let newPokemons = await response.json();
@@ -109,7 +100,7 @@ class App {
       poke.renderMiniInfo();
     });
     // this.pokemons.concat(...(await newPokemons));
-    this.index += 10;
+    this.index += this.pokemonToLoadCount;
   }
   async pokeSetUp(pokemonName: string) {
     let response = await fetch(
@@ -183,7 +174,7 @@ async function main() {
     app.mainSetUp();
   } else {
     let response = await fetch(
-      `${location.origin}/load-pokemons?start=${app.index}&end=${app.lastPokemon}`
+      `${location.origin}/load-pokemons?start=${app.index}&end=${app.index + app.pokemonToLoadCount}`
     );
     app.pokemons = await response.json();
 

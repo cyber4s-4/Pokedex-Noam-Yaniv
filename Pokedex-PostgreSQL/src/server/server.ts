@@ -4,6 +4,7 @@ import cors from "cors";
 import { json } from "body-parser";
 // @ts-ignore
 import { Server } from "http";
+import { cli } from "webpack";
 // @ts-ignore
 const { Client } = require("pg");
 
@@ -25,8 +26,16 @@ const client = new Client({
 
 client.connect();
 
+
+
+
+
+
 app.get("/", (_req, res) => {
-  res.status(200).sendFile(path.join(root, "index.html"));
+  
+    res.status(200).sendFile(path.join(root, "index.html"));
+
+
 });
 
 app.get("/merge", async (_req, res) => {
